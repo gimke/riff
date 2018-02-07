@@ -56,7 +56,92 @@ Options:
   -join       Join RPC address (-join 192.168.1.1:8630,192.168.1.2:8630,192.168.1.3:8630)
 
 ```
+## API
+
+### graphql 
+> POST /api
+
+you can use explorer in Web console to discover api
+
+```graphql
+{
+  service(name: "mongod") {
+    name
+    nodes {
+      name
+    }
+  }
+}
+
+```
+```bash
+curl --request POST \
+  --url http://localhost:8610/api \
+  --header 'content-type: application/json' \
+  --data '{"query":"{\n  service(name: \"mongod\") {\n    name\n    nodes {\n      name\n    }\n  }\n}\n"}'
+```
+### logs
+
+> GET /api/logs
+
+watch logs
+```bash
+curl --request GET \
+  --url http://localhost:8610/api/logs
+```
+### watch
+
+> POST /api/watch?name={watchName}&type={node|service}
+
+watch node or service
+
+```bash
+curl --request POST \
+  --url 'http://localhost:8610/api/watch?type=service&name=mongod' \
+  --header 'content-type: application/json' \
+  --data '{"query":"{\n  service(name: \"mongod\") {\n    name\n    nodes {\n      name\n    }\n  }\n}\n"}'
+```
 
 ## Web Console
 
 ![Riff console](https://raw.githubusercontent.com/gimke/riff/gh-pages/images/screen.png)
+
+## Service Config
+config files in config/*.yml
+
+ping.yml config file
+```yaml
+#name: service name
+#port: service port
+#env:
+#  - CART_MODE=release
+
+#command:
+#  - ./home/cartdemo/cartdemo
+
+#pid_file: ./home/cartdemo/cartdemo.pid
+#std_out_file: ./home/cartdemo/logs/out.log
+#std_err_file: ./home/cartdemo/logs/err.log
+#grace: true
+#run_at_load: false
+#keep_alive: false
+
+#deploy:
+#  provider: github (only support github gitlab)
+#  token: Personal access tokens (visit https://github.com/settings/tokens or https://gitlab.com/profile/personal_access_tokens and generate a new token)
+#  repository: repository address (https://github.com/gimke/cartdemo)
+#  version: branchName (e.g master), latest release (e.g latest）or a release described in a file (e.g master:filepath/version.txt)
+#  payload: payload url when update success
+
+name: ping
+env:
+  - CART_MODE=release
+
+command:
+  - ping
+  - 192.168.3.1
+
+grace: false
+run_at_load: true
+
+```
