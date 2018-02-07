@@ -1,0 +1,8 @@
+.idea
+bin
+cmd
+console
+node_modules
+pkg
+static
+vendor
